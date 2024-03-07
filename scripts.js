@@ -1,11 +1,13 @@
 const addBtn = document.querySelector("#add");
 const bookshelf = document.querySelector("#bookshelf");
-
-addBtn.addEventListener("click", () => {
-    addBookToLibrary();
-    display();
-});
-
+const dialog = document.querySelector("dialog");
+const bookTitle = document.querySelector("#book_title");
+const authorName = document.querySelector("#author_name");
+const pageCount = document.querySelector("#page_count");
+const readStatus = document.querySelector("#read_status");
+const submitBtn = document.querySelector("#submit_button");
+const closeBtn = document.querySelector("#close_button");
+const input = document.querySelector("input");
 const myLibrary = [];
 
 function Book(title, author, pages, read) {
@@ -15,13 +17,33 @@ function Book(title, author, pages, read) {
     this.read = read;
 }
 
+addBtn.addEventListener("click", () => {
+    dialog.showModal();
+});
+
+submitBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+    addBookToLibrary();
+    display();
+    dialog.close();
+    resetForm();
+});
+
+closeBtn.addEventListener("click", () => {            
+    resetForm();
+});
+
 function addBookToLibrary() {
-    let title = "Hi";
-    let author = "My name";
-    let pages = "300";
-    let read = "Yes";
+    let title = bookTitle.value;
+    let author = authorName.value;
+    let pages = pageCount.value;
+    let read = readStatus.value;
     const newBook = new Book(title, author, pages, read)
     myLibrary.push(newBook);
+}
+
+function resetForm() {
+    document.getElementById("new_entry").reset();
 }
 
 function display() {
@@ -30,8 +52,9 @@ function display() {
     };
     myLibrary.forEach((e) => {
         let div = document.createElement("div");
+        let container = document.createElement("div")
+        container.className = "bookCard-button-container";
         div.className = "bookCard";
-        let indexDiv = document.createElement("div");
         let titleDiv = document.createElement("div");
         let authorDiv = document.createElement("div");
         let pagesDiv = document.createElement("div");
@@ -50,8 +73,9 @@ function display() {
         let readBtn = document.createElement("button");
         deleteBtn.textContent = "DELETE";
         readBtn.textContent = "READ";
-        div.appendChild(readBtn);
-        div.appendChild(deleteBtn);
+        div.appendChild(container);
+        container.appendChild(readBtn);
+        container.appendChild(deleteBtn);
         deleteBtn.addEventListener("click", () => {
             myLibrary.splice(index, 1);
             display();
